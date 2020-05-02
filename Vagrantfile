@@ -33,6 +33,7 @@ Vagrant.configure("2") do |config|
     # provisionタスク
     webapp.vm.provision "shell", path: "./provision/webapp/nginx.sh"
     webapp.vm.provision "shell", path: "./provision/webapp/ruby.sh"
+    webapp.vm.provision "shell", path: "./provision/webapp/mariadb.sh"
   end
 
   #
@@ -42,5 +43,17 @@ Vagrant.configure("2") do |config|
     db.vm.hostname = "db.spa-practice.example.com"
     db.vm.box = "bento/amazonlinux-2"
     db.vm.network "private_network", ip: "192.168.33.11"
+
+    #
+    # provision
+    #
+    # /etc/environment の配置
+    db.vm.provision "file", source: "./provision/environment/local", destination: "/tmp/environment.local"
+    db.vm.provision "shell", inline: <<-SHELL
+      mv -f /tmp/environment.local /etc/environment
+    SHELL
+    # provisionタスク
+    db.vm.provision "shell", path: "./provision/db/mariadb-server.sh"
+    db.vm.provision "shell", path: "./provision/db/setup.sh"
   end
 end
