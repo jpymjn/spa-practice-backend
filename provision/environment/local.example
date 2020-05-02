@@ -1,0 +1,5 @@
+#
+# Rails
+#
+# 実行ユーザ
+SPA_PRACTICE_APP_USER=vagrant

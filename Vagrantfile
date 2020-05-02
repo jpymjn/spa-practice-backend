@@ -21,6 +21,18 @@ Vagrant.configure("2") do |config|
     webapp.vm.hostname = "spa-practice.example.com"
     webapp.vm.box = "bento/amazonlinux-2"
     webapp.vm.network "private_network", ip: "192.168.33.10"
+
+    #
+    # provision
+    #
+    # /etc/environment の配置
+    webapp.vm.provision "file", source: "./provision/environment/local", destination: "/tmp/environment.local"
+    webapp.vm.provision "shell", inline: <<-SHELL
+      mv -f /tmp/environment.local /etc/environment
+    SHELL
+    # provisionタスク
+    webapp.vm.provision "shell", path: "./provision/webapp/nginx.sh"
+    webapp.vm.provision "shell", path: "./provision/webapp/ruby.sh"
   end
 
   #
