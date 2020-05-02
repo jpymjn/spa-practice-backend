@@ -7,6 +7,7 @@ SPA_PRACTICE_APP_USER=vagrant
 #
 # DB
 #
+SPA_PRACTICE_DB_HOST=db.spa-practice.example.com
 SPA_PRACTICE_DB_USER=spa_practice
 SPA_PRACTICE_DB_USER_PASSWORD=spa_practice_p4ssw0rd
 SPA_PRACTICE_DB_NAME=spa_practice
