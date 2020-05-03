@@ -33,5 +33,18 @@ module SpaPracticeBackend
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    #
+    # セッション
+    #
+    # APIモードだが、セッション認証ベースの想定
+    # OmniAuthより先に呼ばれる必要があるため、initializersには切り出さない
+    #
+    Rails.application.config.session_store :cookie_store,
+      domain: "#{ENV['SPA_PRACTICE_DOMAIN_NAME']}",
+      key: "_#{ENV['SPA_PRACTICE_APP_HOST_NAME']}_session_id",
+      tld_length: ("#{ENV['SPA_PRACTICE_DOMAIN_NAME']}".presence || 'localhost').split('.').length
+    Rails.application.config.middleware.use ActionDispatch::Cookies # Required for all session management
+    Rails.application.config.middleware.use ActionDispatch::Session::CookieStore, Rails.application.config.session_options
   end
 end
