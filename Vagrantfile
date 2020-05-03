@@ -19,6 +19,10 @@ Vagrant.configure("2") do |config|
   #
   config.vm.define "webapp" do |webapp|
     webapp.vm.hostname = "spa-practice.example.com"
+    webapp.hostmanager.aliases = [
+      "app.spa-practice.example.com",         # Rails(API)
+      "frontend.spa-practice.example.com",    # Nuxt(SPI)
+    ]
     webapp.vm.box = "bento/amazonlinux-2"
     webapp.vm.network "private_network", ip: "192.168.33.10"
 
@@ -29,6 +33,13 @@ Vagrant.configure("2") do |config|
     webapp.vm.provision "file", source: "./provision/environment/local", destination: "/tmp/environment.local"
     webapp.vm.provision "shell", inline: <<-SHELL
       mv -f /tmp/environment.local /etc/environment
+    SHELL
+    # /etc/nginx/conf.d/* の配置
+    webapp.vm.provision "file", source: "./provision/webapp/nginx.conf.d", destination: "/tmp/nginx.conf.d"
+    webapp.vm.provision "shell", inline: <<-SHELL
+      mkdir -p /etc/nginx/conf.d/
+      rm -rf /etc/nginx/conf.d/*
+      mv -f /tmp/nginx.conf.d/* /etc/nginx/conf.d
     SHELL
     # provisionタスク
     webapp.vm.provision "shell", path: "./provision/webapp/nginx.sh"
